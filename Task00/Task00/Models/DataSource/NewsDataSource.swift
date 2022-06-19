@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 struct NewsDataResponse {
     let type: String
     let header: String?
@@ -17,52 +16,160 @@ struct NewsDataResponse {
     let descriptions: [String]
 }
 
-/// С бэка приходит массив NewsDataResponse, где есть тип модели ("header"/ "detail"/"backgroundColoredSpace"/ "image")
-/// Когда приходит type: "header" - надо брать в свою модель проперти header
-/// Когда приходит type: "detail" - надо брать в свою модель проперти title и всё, что в descriptions (склеить в одну проперти descriptionText через \n)
-/// Когда приходит type:  "backgroundColoredSpace" - надо взять только backgroundHex и превратить его в структуру с проперти типа UIColor
-/// Когда приходит type: "image" - надо смотреть только на imageURL и создать из текста проперти тип URL, если он корректный
-///
-/// Если пришёл невалидный type: "unknown" или любой другой неизвестный, то его не надо учитывать и стоит пропускать при конвертации во ViewModels
-/// Брать в свою модель - это создать структуру с постфиксом ViewModel, пример для типа header  будет выглядеть так:
+final class NewsDataSource: DataSourceReadable {
 
-//struct HeaderViewModel {
-//    let header: String
-//}
-
-/// такие же структуры надо сделать для остальных viewModels
-
-final class NewsDataSource {
-
-    // TO-DO надо сделать так, чтобы при установке значения сюда - обновлялись данные в currentScreenItems, вызывав makeScreenItems
-    private var loadedResponseModels: [NewsDataResponse]
+    var currentScreenItems: [DecodableModel] = []
+    
+    private(set) var loadedResponseModels: [NewsDataResponse] {
+        didSet {
+            currentScreenItems = makeScreenItems(from: [oldValue])
+        }
+    }
 
     init() {
         loadedResponseModels = calculateRandomResponse()
+        currentScreenItems = makeScreenItems(from: [loadedResponseModels])
     }
 
-    // SomeYourType - это какой-то тип, который будет объединять/разделять все твои ViewModels разных типов
-    // var currentScreenItems: [SomeYourType] = [] // строчку надо раскоментить, как придумаешь тип.
-
-    func item(at index: Int) {
-        // TO-DO Надо чтобы этот метод возвращал опциональный тип SomeYourType из массива currentScreenItems (при этом учитывая индексы, чтобы не было крэшей)
+    func item(at index: Int) -> DecodableModel? {
+        guard index >= 0 && index < currentScreenItems.count else { return nil }
+        return currentScreenItems[index]
     }
 
     func refreshScreenItems() {
         loadedResponseModels = calculateRandomResponse()
     }
 
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) {
-        // TO-DO метод должен возвращать массив [SomeYourType]
+    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
+//        let header = HeaderViewModel()
+//        let detail = DetailViewModel()
+//        let background = BackgroundSpaceViewModel()
+//        let image = ImageViewModel()
+//
+//        var models: [DecodableModel] = [header, detail, background, image]
+//        responseData.forEach { newsDataResponses in
+//            newsDataResponses.forEach { response in
+//                switch (response.type) {
+//                case "header":
+//                    models[0] = HeaderViewModel(header: response.header ?? "")
+//                case "detail":
+//                    models[1] = DetailViewModel(title: response.title ?? "", descriptions: response.descriptions)
+//                case "backgroundColoredSpace":
+//                    models[2] = BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? "")
+//                case "image":
+//                    models[3] = ImageViewModel(url: response.imageURL ?? "")
+//                case "unknown":
+//                    return
+//                default:
+//                    return
+//                }
+//            }
+//        }
+//        return models
+        
+        var models: [DecodableModel] = []
+        responseData.forEach { newsDataResponses in
+            newsDataResponses.forEach { response in
+                switch (response.type) {
+                case "header":
+                    models.append(HeaderViewModel(header: response.header ?? ""))
+                case "detail":
+                    models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
+                case "backgroundColoredSpace":
+                    models.append(BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? ""))
+                case "image":
+                    models.append(ImageViewModel(url: response.imageURL ?? ""))
+                case "unknown":
+                    return
+                default:
+                    return
+                }
+            }
+        }
+        return models
+    }
+}
+
+final class BeautifulDataSource: DataSourceReadable {
+
+    var currentScreenItems: [DecodableModel] = []
+    
+    private var loadedResponseModels: [NewsDataResponse] {
+        didSet {
+            currentScreenItems = makeScreenItems(from: [oldValue])
+        }
+    }
+
+    init() {
+        loadedResponseModels = calculateRandomResponse()
+        currentScreenItems = makeScreenItems(from: [loadedResponseModels])
+    }
+
+    func item(at index: Int) -> DecodableModel? {
+        guard index >= 0 && index < currentScreenItems.count else { return nil }
+        return currentScreenItems[index]
+    }
+
+    func refreshScreenItems() {
+        loadedResponseModels = calculateRandomResponse()
+    }
+
+    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
+//        let header = HeaderViewModel()
+//        let detail = DetailViewModel()
+//        let background = BackgroundSpaceViewModel()
+//        let image = ImageViewModel()
+//
+//        var models: [DecodableModel] = [header, detail, background, image]
+//        responseData.forEach { newsDataResponses in
+//            newsDataResponses.forEach { response in
+//                switch (response.type) {
+//                case "header":
+//                    models[0] = HeaderViewModel(header: response.header ?? "")
+//                case "detail":
+//                    models[1] = DetailViewModel(title: response.title ?? "", descriptions: response.descriptions)
+//                case "backgroundColoredSpace":
+//                    models[2] = BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? "")
+//                case "image":
+//                    models[3] = ImageViewModel(url: response.imageURL ?? "")
+//                case "unknown":
+//                    return
+//                default:
+//                    return
+//                }
+//            }
+//        }
+//        return models
+        
+        var models: [DecodableModel] = []
+        responseData.forEach { newsDataResponses in
+            newsDataResponses.forEach { response in
+                switch (response.type) {
+                case "header":
+                    models.append(HeaderViewModel(header: response.header ?? ""))
+                case "detail":
+                    models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
+                case "backgroundColoredSpace":
+                    models.append(BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? ""))
+                case "image":
+                    models.append(ImageViewModel(url: response.imageURL ?? ""))
+                case "unknown":
+                    return
+                default:
+                    return
+                }
+            }
+        }
+        return models
     }
 }
 
 /*
-    1) Надо создать свои ViewModels по примеру HeaderViewModel
-    2) Поскольку HeaderViewModel/DetailViewModel/BackgroundSpaceViewModel/ImageViewModel разные, а возвращать в методе
+    /// 1) Надо создать свои ViewModels по примеру HeaderViewModel // done
+    /// 2) Поскольку HeaderViewModel/DetailViewModel/BackgroundSpaceViewModel/ImageViewModel разные, а возвращать в методе
     makeScreenItems нам надо что-то определённого типа, надо подумать как их объединить, чтобы сохранялся порядок и
-    возвращался массив [SomeYourType]
-    3) Реализовать метод item(at index: Int)
+    возвращался массив [SomeYourType] // done
+    /// 3) Реализовать метод item(at index: Int) // done
     4) Создать протокол со всеми internal (не приватными) интерфейсами.
     5) Подписать протокол на NewsDataSource, сделать проперти currentScreenItems - только на чтение через протокол.
     6) Создать BeautifulDataSource, где будет абсолютно такой же инит и схожая реализация
@@ -90,16 +197,13 @@ final class NewsDataSource {
 
 
     Задание со *
-    - Написать init в extension на UIColor, чтобы был инициализатор UIColor(hexString: String)
+    - Написать init в extension на UIColor, чтобы был инициализатор UIColor(hexString: String) // done
     - Каждый следующий separator в BeautifulDataSource увеличивать width на 10 % (начиная с 300.0).
 
 
     По итогу должно быть два класса с реализованным функционалом по правилам выше. Один общий протокол.
     У которых можно будет вызывать refreshScreenItems().
  */
-
-
-
 
 
 /// Этот метод трогать нельзя, он симулирует загрузку данных для задания
@@ -211,3 +315,4 @@ private func calculateRandomResponse() -> [NewsDataResponse] {
     let randomCount = Int(arc4random_uniform(UInt32(exampleFullArray.count - 1)))
     return exampleFullArray.shuffled().dropLast(randomCount)
 }
+
