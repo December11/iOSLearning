@@ -7,15 +7,6 @@
 
 import UIKit
 
-struct NewsDataResponse {
-    let type: String
-    let header: String?
-    let imageURL: String?
-    let title: String?
-    let backgroundHexColor: String?
-    let descriptions: [String]
-}
-
 final class NewsDataSource: DataSourceReadable {
 
     var currentScreenItems: [DecodableModel] = []
@@ -27,7 +18,8 @@ final class NewsDataSource: DataSourceReadable {
     }
 
     init() {
-        loadedResponseModels = calculateRandomResponse()
+        loadedResponseModels = NewsResponses.shared.news
+       // loadedResponseModels = calculateRandomResponse()
         currentScreenItems = makeScreenItems(from: [loadedResponseModels])
     }
 
@@ -37,7 +29,8 @@ final class NewsDataSource: DataSourceReadable {
     }
 
     func refreshScreenItems() {
-        loadedResponseModels = calculateRandomResponse()
+        //loadedResponseModels = calculateRandomResponse()
+        loadedResponseModels = NewsResponses.shared.news
     }
 
     func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
@@ -74,63 +67,7 @@ final class NewsDataSource: DataSourceReadable {
     }
 }
 
-final class BeautifulDataSource: DataSourceReadable {
 
-    var currentScreenItems: [DecodableModel] = []
-    
-    private var loadedResponseModels: [NewsDataResponse] {
-        didSet {
-            currentScreenItems = makeScreenItems(from: [oldValue])
-        }
-    }
-
-    init() {
-        loadedResponseModels = calculateRandomResponse()
-        currentScreenItems = makeScreenItems(from: [loadedResponseModels])
-    }
-
-    func item(at index: Int) -> DecodableModel? {
-        guard index >= 0 && index < currentScreenItems.count else { return nil }
-        return currentScreenItems[index]
-    }
-
-    func refreshScreenItems() {
-        loadedResponseModels = calculateRandomResponse()
-    }
-
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
-        var models: [DecodableModel] = []
-        responseData.forEach { newsDataResponses in
-            newsDataResponses.forEach { response in
-                switch (response.type) {
-                case "header":
-                    guard let header = response.header else { return }
-                    models.append(HeaderViewModel(header: header))
-                case "detail":
-                    models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
-                case "backgroundColoredSpace":
-                    guard
-                        let hexString = response.backgroundHexColor,
-                        let color = UIColor(hexString: hexString)
-                    else { return }
-                    models.append(BackgroundSpaceViewModel(color: color))
-                case "image":
-                    guard
-                        let urlString = response.imageURL,
-                        urlString.isURLVerified,
-                        let url = URL(string: urlString)
-                    else { return }
-                    models.append(ImageViewModel(url: url))
-                case "unknown":
-                    return
-                default:
-                    return
-                }
-            }
-        }
-        return models
-    }
-}
 
 /*
     /// 1) Надо создать свои ViewModels по примеру HeaderViewModel // done
@@ -172,115 +109,4 @@ final class BeautifulDataSource: DataSourceReadable {
     По итогу должно быть два класса с реализованным функционалом по правилам выше. Один общий протокол.
     У которых можно будет вызывать refreshScreenItems().
  */
-
-
-/// Этот метод трогать нельзя, он симулирует загрузку данных для задания
-private func calculateRandomResponse() -> [NewsDataResponse] {
-
-    let header = NewsDataResponse(
-        type: "header",
-        header: "Нельзя сливать данные с Хурала",
-        imageURL: nil,
-        title: nil,
-        backgroundHexColor: nil,
-        descriptions: []
-    )
-
-    let detail = NewsDataResponse(
-        type: "detail",
-        header: nil,
-        imageURL: nil,
-        title: "Что было на хурале за 26.02.98",
-        backgroundHexColor: nil,
-        descriptions: ["Рассказали про то, что мы крутые.", "Убрали копейки, которые добавили.", "Метрики Роста."]
-    )
-
-    let backgroundColoredSpace = NewsDataResponse(
-        type: "backgroundColoredSpace",
-        header: nil,
-        imageURL: nil,
-        title: nil,
-        backgroundHexColor: "#fcba03",
-        descriptions: []
-    )
-
-    let image = NewsDataResponse(
-        type: "image",
-        header: nil,
-        imageURL: "www.yandex.ru",
-        title: nil,
-        backgroundHexColor: nil,
-        descriptions: []
-    )
-
-    let badImage = NewsDataResponse(
-        type: "image",
-        header: nil,
-        imageURL: "KEK KEK KEK",
-        title: nil,
-        backgroundHexColor: nil,
-        descriptions: []
-    )
-
-    let badType = NewsDataResponse(
-        type: "unknown",
-        header: nil,
-        imageURL: "KEK KEK KEK",
-        title: nil,
-        backgroundHexColor: nil,
-        descriptions: []
-    )
-
-    let detailSecond = NewsDataResponse(
-        type: "detail",
-        header: nil,
-        imageURL: nil,
-        title: "Что было на дискашене в iOS команде",
-        backgroundHexColor: nil,
-        descriptions: ["Рассказали про то, что мы крутые.", "Убрали копейки, которые добавили.", "Метрики Роста."]
-    )
-
-    let backgroundColoredSpaceSecond = NewsDataResponse(
-        type: "backgroundColoredSpace",
-        header: nil,
-        imageURL: nil,
-        title: nil,
-        backgroundHexColor: "#fcba03",
-        descriptions: []
-    )
-
-    let imageSecond = NewsDataResponse(
-        type: "image",
-        header: nil,
-        imageURL: "www.yandex.ru",
-        title: nil,
-        backgroundHexColor: nil,
-        descriptions: []
-    )
-
-    let badImageSecond = NewsDataResponse(
-        type: "image",
-        header: nil,
-        imageURL: "KEK KEK KEK",
-        title: nil,
-        backgroundHexColor: nil,
-        descriptions: []
-    )
-
-    let exampleFullArray = [
-        header,
-        detail,
-        backgroundColoredSpace,
-        image,
-        badImage,
-        badType,
-        detailSecond,
-        backgroundColoredSpaceSecond,
-        imageSecond,
-        badImageSecond
-    ]
-
-    let randomCount = Int(arc4random_uniform(UInt32(exampleFullArray.count - 1)))
-    return exampleFullArray.shuffled().dropLast(randomCount)
-}
 

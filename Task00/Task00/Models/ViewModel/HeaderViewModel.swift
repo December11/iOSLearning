@@ -7,8 +7,4 @@
 
 struct HeaderViewModel: DecodableModel {
     let header: String
-    
-    init(header: String) {
-        self.header = header
-    }
 }

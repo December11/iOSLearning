@@ -9,8 +9,4 @@ import Foundation
 
 struct ImageViewModel: DecodableModel {
     let url: URL
-    
-    init(url: URL) {
-        self.url = url
-    }
 }

@@ -9,8 +9,4 @@ import UIKit
 
 struct BackgroundSpaceViewModel: DecodableModel {
     let color: UIColor
-    
-    init(color: UIColor) {
-        self.color = color
-    }
 }
