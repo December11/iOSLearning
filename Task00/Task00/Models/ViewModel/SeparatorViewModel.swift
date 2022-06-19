@@ -14,5 +14,6 @@ struct SeparatorViewModel: DecodableModel {
     /// по умолчанию 10.0
     mutating func increaseWidth(value: CGFloat = 10.0) {
         separatorWidth = separatorWidth + ((separatorWidth * value) / 100.0)
+        separatorWidth.round(.awayFromZero)
     }
 }

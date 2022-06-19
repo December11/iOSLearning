@@ -13,15 +13,16 @@ final class BeautifulDataSource: DataSourceReadable {
     var separatorWidth: CGFloat = 300.0
     
     private var loadedResponseModels: [NewsDataResponse] {
-        didSet {
-            currentScreenItems = makeScreenItems(from: [oldValue])
+        get {
+            return NewsResponses.shared.news
+        }
+        set {
+            currentScreenItems = makeScreenItems(from: [newValue])
         }
     }
 
     init() {
         loadedResponseModels = NewsResponses.shared.news
-       // loadedResponseModels = calculateRandomResponse()
-        currentScreenItems = makeScreenItems(from: [loadedResponseModels])
     }
 
     func item(at index: Int) -> DecodableModel? {
@@ -35,7 +36,6 @@ final class BeautifulDataSource: DataSourceReadable {
 
     func refreshScreenItems() {
         loadedResponseModels = NewsResponses.shared.news
-       // loadedResponseModels = calculateRandomResponse()
     }
 
     func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
