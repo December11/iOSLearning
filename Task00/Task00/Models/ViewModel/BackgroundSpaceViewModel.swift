@@ -7,17 +7,10 @@
 
 import UIKit
 
-struct BackgroundSpaceViewModel {
-    let color: UIColor?
+struct BackgroundSpaceViewModel: DecodableModel {
+    let color: UIColor
     
-    init(hexString: String) {
-        self.color = UIColor(hexString: hexString) != nil ? UIColor(hexString: hexString) : nil
-//        print("## BackgroundSpaceViewModel created with color: \(hexString) and result: \(String(describing: self.color))")
-    }
-}
-
-extension BackgroundSpaceViewModel: DecodableModel {
-    init() {
-        self.color = nil
+    init(color: UIColor) {
+        self.color = color
     }
 }

@@ -7,17 +7,10 @@
 
 import Foundation
 
-struct ImageViewModel {
-    let url: URL?
+struct ImageViewModel: DecodableModel {
+    let url: URL
     
-    init(url: String) {
-        self.url = url.isURLVerified ? URL(string: url) : nil
-//        print("## BackgroundSpaceViewModel created with url: \(url) and result: \(String(describing: url))")
-    }
-}
-
-extension ImageViewModel: DecodableModel {
-    init() {
-        self.url = URL(string: "")
+    init(url: URL) {
+        self.url = url
     }
 }

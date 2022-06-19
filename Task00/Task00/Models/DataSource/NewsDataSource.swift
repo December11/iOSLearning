@@ -41,44 +41,28 @@ final class NewsDataSource: DataSourceReadable {
     }
 
     func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
-//        let header = HeaderViewModel()
-//        let detail = DetailViewModel()
-//        let background = BackgroundSpaceViewModel()
-//        let image = ImageViewModel()
-//
-//        var models: [DecodableModel] = [header, detail, background, image]
-//        responseData.forEach { newsDataResponses in
-//            newsDataResponses.forEach { response in
-//                switch (response.type) {
-//                case "header":
-//                    models[0] = HeaderViewModel(header: response.header ?? "")
-//                case "detail":
-//                    models[1] = DetailViewModel(title: response.title ?? "", descriptions: response.descriptions)
-//                case "backgroundColoredSpace":
-//                    models[2] = BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? "")
-//                case "image":
-//                    models[3] = ImageViewModel(url: response.imageURL ?? "")
-//                case "unknown":
-//                    return
-//                default:
-//                    return
-//                }
-//            }
-//        }
-//        return models
-        
         var models: [DecodableModel] = []
         responseData.forEach { newsDataResponses in
             newsDataResponses.forEach { response in
                 switch (response.type) {
                 case "header":
-                    models.append(HeaderViewModel(header: response.header ?? ""))
+                    guard let header = response.header else { return }
+                    models.append(HeaderViewModel(header: header))
                 case "detail":
                     models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
                 case "backgroundColoredSpace":
-                    models.append(BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? ""))
+                    guard
+                        let hexString = response.backgroundHexColor,
+                        let color = UIColor(hexString: hexString)
+                    else { return }
+                    models.append(BackgroundSpaceViewModel(color: color))
                 case "image":
-                    models.append(ImageViewModel(url: response.imageURL ?? ""))
+                    guard
+                        let urlString = response.imageURL,
+                        urlString.isURLVerified,
+                        let url = URL(string: urlString)
+                    else { return }
+                    models.append(ImageViewModel(url: url))
                 case "unknown":
                     return
                 default:
@@ -115,44 +99,28 @@ final class BeautifulDataSource: DataSourceReadable {
     }
 
     func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
-//        let header = HeaderViewModel()
-//        let detail = DetailViewModel()
-//        let background = BackgroundSpaceViewModel()
-//        let image = ImageViewModel()
-//
-//        var models: [DecodableModel] = [header, detail, background, image]
-//        responseData.forEach { newsDataResponses in
-//            newsDataResponses.forEach { response in
-//                switch (response.type) {
-//                case "header":
-//                    models[0] = HeaderViewModel(header: response.header ?? "")
-//                case "detail":
-//                    models[1] = DetailViewModel(title: response.title ?? "", descriptions: response.descriptions)
-//                case "backgroundColoredSpace":
-//                    models[2] = BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? "")
-//                case "image":
-//                    models[3] = ImageViewModel(url: response.imageURL ?? "")
-//                case "unknown":
-//                    return
-//                default:
-//                    return
-//                }
-//            }
-//        }
-//        return models
-        
         var models: [DecodableModel] = []
         responseData.forEach { newsDataResponses in
             newsDataResponses.forEach { response in
                 switch (response.type) {
                 case "header":
-                    models.append(HeaderViewModel(header: response.header ?? ""))
+                    guard let header = response.header else { return }
+                    models.append(HeaderViewModel(header: header))
                 case "detail":
                     models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
                 case "backgroundColoredSpace":
-                    models.append(BackgroundSpaceViewModel(hexString: response.backgroundHexColor ?? ""))
+                    guard
+                        let hexString = response.backgroundHexColor,
+                        let color = UIColor(hexString: hexString)
+                    else { return }
+                    models.append(BackgroundSpaceViewModel(color: color))
                 case "image":
-                    models.append(ImageViewModel(url: response.imageURL ?? ""))
+                    guard
+                        let urlString = response.imageURL,
+                        urlString.isURLVerified,
+                        let url = URL(string: urlString)
+                    else { return }
+                    models.append(ImageViewModel(url: url))
                 case "unknown":
                     return
                 default:

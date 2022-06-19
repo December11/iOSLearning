@@ -5,16 +5,10 @@
 //  Created by 👩🏻‍🎨 📱 december11 on 17.06.2022.
 //
 
-struct HeaderViewModel {
+struct HeaderViewModel: DecodableModel {
     let header: String
+    
     init(header: String) {
         self.header = header
-//        print("## HeaderViewModel created with header: \(header)")
-    }
-}
-
-extension HeaderViewModel: DecodableModel {
-    init() {
-        self.header = ""
     }
 }
