@@ -7,21 +7,26 @@
 
 import UIKit
 
-final class NewsDataSource: DataSourceReadable {
+final public class NewsDataSource: DataSourceReadable {
 
     var currentScreenItems: [DecodableModel] = []
     
-    private var loadedResponseModels: [NewsDataResponse] {
-        get {
-            return NewsResponses.shared.news
-        }
-        set {
-            currentScreenItems = makeScreenItems(from: [newValue])
-        }
-    }
+    private var loadedResponseModels: [NewsDataResponse] = []
 
-    init() {
-        loadedResponseModels = NewsResponses.shared.news
+    public init() {
+        let news = NewsResponses.randomNews.calculateRandomResponse()
+        self.currentScreenItems = self.makeScreenItems(from: [news])
+        self.loadedResponseModels = news
+        
+        print("\n* * *\nrandomNews count = \(self.loadedResponseModels.count)")
+        self.loadedResponseModels.forEach { elem in
+            print(elem)
+        }
+        
+        print("\n* * *\nNews count = \(self.currentScreenItems.count)")
+        self.currentScreenItems.forEach { elem in
+            print(elem)
+        }
     }
 
     func item(at index: Int) -> DecodableModel? {
@@ -29,8 +34,8 @@ final class NewsDataSource: DataSourceReadable {
         return currentScreenItems[index]
     }
 
-    func refreshScreenItems() {
-        loadedResponseModels = NewsResponses.shared.news
+    public func refreshScreenItems() {
+        loadedResponseModels = NewsResponses.randomNews.calculateRandomResponse()
     }
 
     func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {

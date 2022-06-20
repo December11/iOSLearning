@@ -5,5 +5,5 @@
 //  Created by Alla Shkolnik on 19.06.2022.
 //
 
-protocol DecodableModel {
+public protocol DecodableModel {
 }

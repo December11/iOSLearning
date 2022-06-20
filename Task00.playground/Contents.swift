@@ -1,3 +1,8 @@
-import UIKit
+import PlaygroundSupport
 
-var greeting = "Hello, playground"
+
+var source = NewsDataSource()
+
+var beautifulSource = BeautifulDataSource()
+
+

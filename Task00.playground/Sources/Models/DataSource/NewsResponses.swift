@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct NewsDataResponse {
+public struct NewsDataResponse {
     let type: String
     let header: String?
     let imageURL: String?
@@ -16,17 +16,11 @@ struct NewsDataResponse {
     let descriptions: [String]
 }
 
-final class NewsResponses {
-    static let shared = NewsResponses()
-    
-    var news: [NewsDataResponse] = []
-    
-    private init() {
-        self.news = calculateRandomResponse()
-    }
+enum NewsResponses {
+    case randomNews
     
     /// Этот метод трогать нельзя, он симулирует загрузку данных для задания
-    private func calculateRandomResponse() -> [NewsDataResponse] {
+    func calculateRandomResponse() -> [NewsDataResponse] {
 
         let header = NewsDataResponse(
             type: "header",
