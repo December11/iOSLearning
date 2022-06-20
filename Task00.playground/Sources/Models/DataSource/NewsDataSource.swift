@@ -47,7 +47,6 @@ final public class NewsDataSource: DataSourceReadable {
                 case "image":
                     guard
                         let urlString = response.imageURL,
-                        urlString.isURLVerified,
                         let url = URL(string: urlString)
                     else { return }
                     models.append(ImageViewModel(url: url))
