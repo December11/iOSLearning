@@ -17,16 +17,6 @@ final public class NewsDataSource: DataSourceReadable {
         let news = NewsResponses.randomNews.calculateRandomResponse()
         self.currentScreenItems = self.makeScreenItems(from: [news])
         self.loadedResponseModels = news
-        
-        print("\n* * *\nrandomNews count = \(self.loadedResponseModels.count)")
-        self.loadedResponseModels.forEach { elem in
-            print(elem)
-        }
-        
-        print("\n* * *\nNews count = \(self.currentScreenItems.count)")
-        self.currentScreenItems.forEach { elem in
-            print(elem)
-        }
     }
 
     func item(at index: Int) -> DecodableModel? {
