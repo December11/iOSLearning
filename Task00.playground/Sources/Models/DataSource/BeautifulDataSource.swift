@@ -5,83 +5,60 @@
 //  Created by Alla Shkolnik on 19.06.2022.
 //
 
-import UIKit
+import CoreGraphics
 
-final public class BeautifulDataSource: DataSourceReadable {
+final public class BeautifulDataSource: DataSourceProtocol {
 
-    var currentScreenItems: [DecodableModel] = []
-    var separatorWidth: CGFloat = 300.0
-    
+    private(set) var currentScreenItems: [ViewModelType] = []
     private var loadedResponseModels: [NewsDataResponse] = []
-
+    
     public init() {
-        let news = NewsResponses.randomNews.calculateRandomResponse()
+        let news = NewsService.calculateRandomResponse()
         self.currentScreenItems = self.makeScreenItems(from: [news])
         self.loadedResponseModels = news
     }
-
-    func item(at index: Int) -> DecodableModel? {
-        var newIndex = index
-        if newIndex % 2 != 0 {
-            newIndex += 1
-        }
-        guard newIndex >= 0 && newIndex < currentScreenItems.count else { return nil }
-        return currentScreenItems[newIndex]
+    
+    func item(at index: Int) -> ViewModelType? {
+        let slice = currentScreenItems[index...].enumerated().filter { $0.offset % 2 == 0 }
+        return currentScreenItems[slice.startIndex]
     }
-
+    
     public func refreshScreenItems() {
-        loadedResponseModels = NewsResponses.randomNews.calculateRandomResponse()
+        loadedResponseModels = NewsService.calculateRandomResponse()
     }
 
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
-        var models: [DecodableModel] = []
+    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [ViewModelType] {
+        var models: [ViewModelType] = []
         responseData.forEach { newsDataResponses in
             newsDataResponses.forEach { response in
-                switch (response.type) {
-                case "header":
-                    guard let header = response.header else { return }
-                    models.append(HeaderViewModel(header: header))
-                case "detail":
-                    models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
-                case "backgroundColoredSpace":
-                    guard
-                        let hexString = response.backgroundHexColor,
-                        let color = UIColor(hexString: hexString)
-                    else { return }
-                    models.append(BackgroundSpaceViewModel(color: color))
-                case "image":
-                    guard
-                        let urlString = response.imageURL,
-                        let url = URL(string: urlString)
-                    else { return }
-                    models.append(ImageViewModel(url: url))
-                case "unknown":
-                    return
-                default:
-                    return
-                }
+                guard let item = ViewModelType(
+                    type: response.type,
+                    header: response.header ?? "",
+                    title: response.title ?? "",
+                    description: response.descriptions,
+                    url: response.imageURL ?? "",
+                    hexString: response.backgroundHexColor ?? ""
+                )
+                else { return }
+                models.append(item)
             }
         }
-        addSeparators(to: &models)
+        models = createSeparatedViewModels(to: models)
         return models
     }
     
-    private func addSeparators(to array: inout [DecodableModel]) {
-        for index in 0..<2 * array.count-1 {
-            if index % 2 != 0 {
-                array.insert(getSeparator(isFirst: index == 1), at: index)
+    private func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
+        var newArray = array
+        var separatorWidth: CGFloat = 300.0
+        for index in 0 ..< 2 * array.count - 1 where index % 2 != 0 {
+            if index == 1 {
+                newArray.insert(ViewModelType(separatorWidth: 300.0), at: index)
+            } else {
+                separatorWidth += separatorWidth * 10.0 / 100.0
+                separatorWidth.round(.awayFromZero)
+                newArray.insert(ViewModelType(separatorWidth: separatorWidth), at: index)
             }
         }
-    }
-    
-    private func getSeparator(isFirst: Bool) -> SeparatorViewModel {
-        if isFirst {
-            separatorWidth = 300.0
-            return SeparatorViewModel()
-        }
-        var separator = SeparatorViewModel(separatorWidth: separatorWidth)
-        separator.increaseWidth()
-        separatorWidth = separator.separatorWidth
-        return separator
+        return newArray
     }
 }

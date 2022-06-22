@@ -5,56 +5,39 @@
 //  Created by 👩🏻‍🎨 📱 december11 on 18.06.2022.
 //
 
-import UIKit
+final public class NewsDataSource: DataSourceProtocol {
 
-final public class NewsDataSource: DataSourceReadable {
-
-    var currentScreenItems: [DecodableModel] = []
-    
+    private(set) var currentScreenItems: [ViewModelType] = []
     private var loadedResponseModels: [NewsDataResponse] = []
 
     public init() {
-        let news = NewsResponses.randomNews.calculateRandomResponse()
+        let news = NewsService.calculateRandomResponse()
         self.currentScreenItems = self.makeScreenItems(from: [news])
         self.loadedResponseModels = news
     }
-
-    func item(at index: Int) -> DecodableModel? {
-        guard index >= 0 && index < currentScreenItems.count else { return nil }
-        return currentScreenItems[index]
+    
+    func item(at index: Int) -> ViewModelType? {
+        currentScreenItems[index...].first { $0 != .separator(0) }
     }
 
     public func refreshScreenItems() {
-        loadedResponseModels = NewsResponses.randomNews.calculateRandomResponse()
+        loadedResponseModels = NewsService.calculateRandomResponse()
     }
-
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [DecodableModel] {
-        var models: [DecodableModel] = []
+    
+    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [ViewModelType] {
+        var models: [ViewModelType] = []
         responseData.forEach { newsDataResponses in
             newsDataResponses.forEach { response in
-                switch (response.type) {
-                case "header":
-                    guard let header = response.header else { return }
-                    models.append(HeaderViewModel(header: header))
-                case "detail":
-                    models.append(DetailViewModel(title: response.title ?? "", descriptions: response.descriptions))
-                case "backgroundColoredSpace":
-                    guard
-                        let hexString = response.backgroundHexColor,
-                        let color = UIColor(hexString: hexString)
-                    else { return }
-                    models.append(BackgroundSpaceViewModel(color: color))
-                case "image":
-                    guard
-                        let urlString = response.imageURL,
-                        let url = URL(string: urlString)
-                    else { return }
-                    models.append(ImageViewModel(url: url))
-                case "unknown":
-                    return
-                default:
-                    return
-                }
+                guard let item = ViewModelType(
+                    type: response.type,
+                    header: response.header ?? "",
+                    title: response.title ?? "",
+                    description: response.descriptions,
+                    url: response.imageURL ?? "",
+                    hexString: response.backgroundHexColor ?? ""
+                )
+                else { return }
+                models.append(item)
             }
         }
         return models

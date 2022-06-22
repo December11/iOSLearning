@@ -16,11 +16,10 @@ public struct NewsDataResponse {
     let descriptions: [String]
 }
 
-enum NewsResponses {
-    case randomNews
+enum NewsService {
     
     /// Этот метод трогать нельзя, он симулирует загрузку данных для задания
-    func calculateRandomResponse() -> [NewsDataResponse] {
+    static func calculateRandomResponse() -> [NewsDataResponse] {
 
         let header = NewsDataResponse(
             type: "header",
