@@ -49,14 +49,14 @@ final public class BeautifulDataSource: DataSourceProtocol {
     
     private func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
         var newArray = array
-        var separatorWidth: CGFloat = 300.0
+        var currentSeparatorWidth: CGFloat = 300.0
         for index in 0 ..< 2 * array.count - 1 where index % 2 != 0 {
             if index == 1 {
                 newArray.insert(ViewModelType(separatorWidth: 300.0), at: index)
             } else {
-                separatorWidth += separatorWidth * 10.0 / 100.0
-                separatorWidth.round(.awayFromZero)
-                newArray.insert(ViewModelType(separatorWidth: separatorWidth), at: index)
+                currentSeparatorWidth += currentSeparatorWidth * 10.0 / 100.0
+                currentSeparatorWidth.round(.awayFromZero)
+                newArray.insert(ViewModelType(separatorWidth: currentSeparatorWidth), at: index)
             }
         }
         return newArray
