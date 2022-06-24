@@ -9,16 +9,18 @@ import CoreGraphics
 
 final public class BeautifulDataSource: DataSourceProtocol {
 
-    private(set) var currentScreenItems: [ViewModelType] = []
-    private var loadedResponseModels: [NewsDataResponse] = []
+    private(set) var currentScreenItems: [ViewModelType]
+    private var loadedResponseModels: [NewsDataResponse]
     
     public init() {
         let news = NewsService.calculateRandomResponse()
-        self.currentScreenItems = self.makeScreenItems(from: [news])
+        self.currentScreenItems = Self.makeScreenItems(from: news)
         self.loadedResponseModels = news
     }
     
     func item(at index: Int) -> ViewModelType? {
+        let slice = currentScreenItems[index...]
+        slice.first(where: <#T##(EnumeratedSequence<Array<ViewModelType>.SubSequence>.Iterator.Element) throws -> Bool#>)
         let slice = currentScreenItems[index...].enumerated().filter { $0.offset % 2 == 0 }
         return currentScreenItems[slice.startIndex]
     }
@@ -27,29 +29,35 @@ final public class BeautifulDataSource: DataSourceProtocol {
         loadedResponseModels = NewsService.calculateRandomResponse()
     }
 
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [ViewModelType] {
+    ///forEatch map filter compactMap reduce allSatisfy sort sorted
+    static func makeScreenItems(from responseData: [NewsDataResponse]) -> [ViewModelType] {
         var models: [ViewModelType] = []
-        responseData.forEach { newsDataResponses in
-            newsDataResponses.forEach { response in
-                guard let item = ViewModelType(
-                    type: response.type,
-                    header: response.header ?? "",
-                    title: response.title ?? "",
-                    description: response.descriptions,
-                    url: response.imageURL ?? "",
-                    hexString: response.backgroundHexColor ?? ""
-                )
-                else { return }
-                models.append(item)
+        responseData.forEach { response in
+            guard let item = ViewModelType(
+                type: response.type,
+                header: response.header ?? "",
+                title: response.title ?? "",
+                description: response.descriptions,
+                url: response.imageURL ?? "",
+                hexString: response.backgroundHexColor ?? ""
+            ) else {
+                return
             }
+
+            models.append(item)
         }
         models = createSeparatedViewModels(to: models)
+
         return models
     }
     
-    private func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
+    private static func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
         var newArray = array
         var currentSeparatorWidth: CGFloat = 300.0
+        
+        array.enumerated().flatMap { index, element in
+            return []
+        }
         for index in 0 ..< 2 * array.count - 1 where index % 2 != 0 {
             if index == 1 {
                 newArray.insert(ViewModelType(separatorWidth: 300.0), at: index)

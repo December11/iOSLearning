@@ -12,34 +12,36 @@ final public class NewsDataSource: DataSourceProtocol {
 
     public init() {
         let news = NewsService.calculateRandomResponse()
-        self.currentScreenItems = self.makeScreenItems(from: [news])
+        self.currentScreenItems = Self.makeScreenItems(from: news)
         self.loadedResponseModels = news
     }
     
     func item(at index: Int) -> ViewModelType? {
-        currentScreenItems[index...].first { $0 != .separator(0) }
+        guard currentScreenItems.indices.contains(index) else { return nil }
+        return currentScreenItems[index]
     }
 
     public func refreshScreenItems() {
         loadedResponseModels = NewsService.calculateRandomResponse()
     }
     
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [ViewModelType] {
+    static func makeScreenItems(from responseData: [NewsDataResponse]) -> [ViewModelType] {
         var models: [ViewModelType] = []
-        responseData.forEach { newsDataResponses in
-            newsDataResponses.forEach { response in
-                guard let item = ViewModelType(
-                    type: response.type,
-                    header: response.header ?? "",
-                    title: response.title ?? "",
-                    description: response.descriptions,
-                    url: response.imageURL ?? "",
-                    hexString: response.backgroundHexColor ?? ""
-                )
-                else { return }
-                models.append(item)
+        responseData.forEach { response in
+            guard let item = ViewModelType(
+                type: response.type,
+                header: response.header ?? "",
+                title: response.title ?? "",
+                description: response.descriptions,
+                url: response.imageURL ?? "",
+                hexString: response.backgroundHexColor ?? ""
+            ) else {
+                return
             }
+
+            models.append(item)
         }
+
         return models
     }
 }

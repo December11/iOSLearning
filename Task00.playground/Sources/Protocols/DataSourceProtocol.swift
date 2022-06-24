@@ -10,5 +10,5 @@ protocol DataSourceProtocol {
     
     func item(at index: Int) -> ViewModelType?
     func refreshScreenItems()
-    func makeScreenItems(from responseData: [[NewsDataResponse]]) -> [ViewModelType]
+    static func makeScreenItems(from responseData: [NewsDataResponse]) -> [ViewModelType]
 }
