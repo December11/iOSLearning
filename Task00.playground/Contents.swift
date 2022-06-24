@@ -1,7 +1,7 @@
 import PlaygroundSupport
 
 
-var source:  = NewsDataSource()
+var source = NewsDataSource()
 source.refreshScreenItems()
 
 var beautifulSource = BeautifulDataSource()

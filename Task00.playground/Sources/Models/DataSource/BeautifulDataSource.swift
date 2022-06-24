@@ -20,13 +20,16 @@ final public class BeautifulDataSource: DataSourceProtocol {
     
     func item(at index: Int) -> ViewModelType? {
         let slice = currentScreenItems[index...]
-        slice.first(where: <#T##(EnumeratedSequence<Array<ViewModelType>.SubSequence>.Iterator.Element) throws -> Bool#>)
+        slice.first { <#EnumeratedSequence<Array<ViewModelType>.SubSequence>.Iterator.Element#> in
+            <#code#>
+        }
         let slice = currentScreenItems[index...].enumerated().filter { $0.offset % 2 == 0 }
         return currentScreenItems[slice.startIndex]
     }
     
     public func refreshScreenItems() {
         loadedResponseModels = NewsService.calculateRandomResponse()
+        print("\n\(currentScreenItems)")
     }
 
     ///forEatch map filter compactMap reduce allSatisfy sort sorted
@@ -69,4 +72,15 @@ final public class BeautifulDataSource: DataSourceProtocol {
         }
         return newArray
     }
+    
+//    private func getSeparatorWidth(after startIndex: Int) -> CGFloat {
+//        var currentSeparatorWidth: CGFloat = 300.0
+//        if startIndex >= 2 {
+//            for index in 2...startIndex where index % 2 == 0 {
+//                currentSeparatorWidth += currentSeparatorWidth * 10.0 / 100.0
+//                currentSeparatorWidth.round(.awayFromZero)
+//            }
+//        }
+//        return currentSeparatorWidth
+//    }
 }
