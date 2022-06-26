@@ -50,7 +50,7 @@ final public class BeautifulDataSource: DataSourceProtocol {
     
     private func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
         var results = array
-        _ = results.enumerated().compactMap({ index, element in
+        _ = results.enumerated().map({ index, element in
             guard results.indices.contains(index.nextOdd) else { return }
             results.insert(getSeparator(of: index.nextOdd), at: index.nextOdd)
         })
