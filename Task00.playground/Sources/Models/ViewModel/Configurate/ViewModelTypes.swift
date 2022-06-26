@@ -34,7 +34,7 @@ enum ViewModelType {
         }
     }
     
-    init(separatorWidth: CGFloat) {
+   init(separatorWidth: CGFloat) {
         self = .separator(separatorWidth)
     }
 }

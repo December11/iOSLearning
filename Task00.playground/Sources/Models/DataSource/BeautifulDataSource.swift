@@ -19,17 +19,11 @@ final public class BeautifulDataSource: DataSourceProtocol {
     }
     
     func item(at index: Int) -> ViewModelType? {
-        let slice = currentScreenItems[index...]
-        slice.first { <#EnumeratedSequence<Array<ViewModelType>.SubSequence>.Iterator.Element#> in
-            <#code#>
-        }
-        let slice = currentScreenItems[index...].enumerated().filter { $0.offset % 2 == 0 }
-        return currentScreenItems[slice.startIndex]
+        currentScreenItems[index...].first { $0 != getSeparator(of: index) }
     }
     
     public func refreshScreenItems() {
         loadedResponseModels = NewsService.calculateRandomResponse()
-        print("\n\(currentScreenItems)")
     }
 
     ///forEatch map filter compactMap reduce allSatisfy sort sorted
@@ -49,38 +43,30 @@ final public class BeautifulDataSource: DataSourceProtocol {
 
             models.append(item)
         }
-        models = createSeparatedViewModels(to: models)
+        models = BeautifulDataSource().createSeparatedViewModels(to: models)
 
         return models
     }
     
-    private static func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
-        var newArray = array
-        var currentSeparatorWidth: CGFloat = 300.0
-        
-        array.enumerated().flatMap { index, element in
-            return []
-        }
-        for index in 0 ..< 2 * array.count - 1 where index % 2 != 0 {
-            if index == 1 {
-                newArray.insert(ViewModelType(separatorWidth: 300.0), at: index)
-            } else {
-                currentSeparatorWidth += currentSeparatorWidth * 10.0 / 100.0
-                currentSeparatorWidth.round(.awayFromZero)
-                newArray.insert(ViewModelType(separatorWidth: currentSeparatorWidth), at: index)
-            }
-        }
-        return newArray
+    func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
+        var results = array
+        _ = results.enumerated().compactMap({ index, element in
+            guard results.indices.contains(index.nextOdd) else { return }
+            results.insert(getSeparator(of: index.nextOdd), at: index.nextOdd)
+        })
+        return array
     }
     
-//    private func getSeparatorWidth(after startIndex: Int) -> CGFloat {
-//        var currentSeparatorWidth: CGFloat = 300.0
-//        if startIndex >= 2 {
-//            for index in 2...startIndex where index % 2 == 0 {
-//                currentSeparatorWidth += currentSeparatorWidth * 10.0 / 100.0
-//                currentSeparatorWidth.round(.awayFromZero)
-//            }
-//        }
-//        return currentSeparatorWidth
-//    }
+    func getSeparator(of startIndex: Int) -> ViewModelType {
+        var currentSeparatorWidth: CGFloat = 300.0
+        let correctedIndex = startIndex.isOdd ? startIndex : startIndex + 1
+        if startIndex >= 2 {
+            let indicies = [Int](2...correctedIndex)
+            _ = indicies.filter { $0.isOdd }.map { index in
+                currentSeparatorWidth += currentSeparatorWidth.tenPercents
+                currentSeparatorWidth.round(.awayFromZero)
+            }
+        }
+        return ViewModelType(separatorWidth: currentSeparatorWidth)
+    }
 }

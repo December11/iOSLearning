@@ -7,8 +7,8 @@
 
 final public class NewsDataSource: DataSourceProtocol {
 
-    private(set) var currentScreenItems: [ViewModelType] = []
-    private var loadedResponseModels: [NewsDataResponse] = []
+    private(set) var currentScreenItems: [ViewModelType]
+    private var loadedResponseModels: [NewsDataResponse]
 
     public init() {
         let news = NewsService.calculateRandomResponse()
@@ -18,6 +18,7 @@ final public class NewsDataSource: DataSourceProtocol {
     
     func item(at index: Int) -> ViewModelType? {
         guard currentScreenItems.indices.contains(index) else { return nil }
+        
         return currentScreenItems[index]
     }
 

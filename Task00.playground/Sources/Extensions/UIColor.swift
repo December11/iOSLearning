@@ -15,7 +15,9 @@ extension UIColor {
         guard
             hexValue.count == 6,
             scanner.scanHexInt64(&hexNumber)
-        else { return nil }
+        else {
+            return nil
+        }
         
         self.init(
             red: CGFloat((hexNumber & 0xFF0000) >> 16) / 255.0,
