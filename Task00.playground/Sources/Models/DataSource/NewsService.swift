@@ -5,6 +5,8 @@
 //  Created by Alla Shkolnik on 19.06.2022.
 //
 
+import Foundation
+
 public struct NewsDataResponse {
     let type: String
     let header: String?
