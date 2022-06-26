@@ -48,7 +48,7 @@ final public class BeautifulDataSource: DataSourceProtocol {
         return models
     }
     
-    func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
+    private func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
         var results = array
         _ = results.enumerated().compactMap({ index, element in
             guard results.indices.contains(index.nextOdd) else { return }
@@ -57,7 +57,7 @@ final public class BeautifulDataSource: DataSourceProtocol {
         return array
     }
     
-    func getSeparator(of startIndex: Int) -> ViewModelType {
+    private func getSeparator(of startIndex: Int) -> ViewModelType {
         var currentSeparatorWidth: CGFloat = 300.0
         let correctedIndex = startIndex.isOdd ? startIndex : startIndex + 1
         if startIndex >= 2 {
