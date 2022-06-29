@@ -60,10 +60,10 @@ final public class BeautifulDataSource: DataSourceProtocol {
     
     private func getSeparator(of startIndex: Int) -> ViewModelType {
         var currentSeparatorWidth: CGFloat = 300.0
-        let correctedIndex = startIndex.isOdd ? startIndex : startIndex + 1
+        let correctedIndex = startIndex.isOdd ? startIndex : startIndex
         if startIndex >= 2 {
             let indicies = [Int](2...correctedIndex)
-            _ = indicies.filter { $0.isOdd }.map { index in
+            let res = indicies.map { index in
                 currentSeparatorWidth += currentSeparatorWidth.tenPercents
                 currentSeparatorWidth.round(.awayFromZero)
             }
