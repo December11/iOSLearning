@@ -52,7 +52,7 @@ final public class BeautifulDataSource: DataSourceProtocol {
         let results: [ViewModelType] = array
             .enumerated()
             .flatMap { index, element in
-            return index > 0 ? [getSeparator(of: index), element] : [element]
+            index > 0 ? [getSeparator(of: index), element] : [element]
         }
         
         return results
