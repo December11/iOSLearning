@@ -49,7 +49,7 @@ final public class BeautifulDataSource: DataSourceProtocol {
     }
     
     private func createSeparatedViewModels(to array: [ViewModelType]) -> [ViewModelType] {
-        let results = array
+        let results: [ViewModelType] = array
             .enumerated()
             .flatMap { index, element in
             return index > 0 ? [getSeparator(of: index), element] : [element]
