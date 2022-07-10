@@ -63,7 +63,7 @@ final public class BeautifulDataSource: DataSourceProtocol {
         let correctedIndex = startIndex.isOdd ? startIndex : startIndex
         if startIndex >= 2 {
             let indicies = [Int](2...correctedIndex)
-            let res = indicies.map { index in
+            _ = indicies.map { index in
                 currentSeparatorWidth += currentSeparatorWidth.tenPercents
                 currentSeparatorWidth.round(.awayFromZero)
             }
