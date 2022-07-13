@@ -1,4 +1,5 @@
 extension Int {
+    
     var isEven: Bool {
         self % 2 == 0
     }
@@ -8,5 +9,5 @@ extension Int {
     var nextOdd: Int {
         self * 2 + 1
     }
+    
 }
-

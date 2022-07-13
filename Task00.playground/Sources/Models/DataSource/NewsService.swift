@@ -8,12 +8,14 @@
 import Foundation
 
 public struct NewsDataResponse {
+    
     let type: String
     let header: String?
     let imageURL: String?
     let title: String?
     let backgroundHexColor: String?
     let descriptions: [String]
+    
 }
 
 enum NewsService {
@@ -127,4 +129,5 @@ enum NewsService {
         let randomCount = Int(arc4random_uniform(UInt32(exampleFullArray.count - 1)))
         return exampleFullArray.shuffled().dropLast(randomCount)
     }
+    
 }

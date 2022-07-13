@@ -6,9 +6,12 @@
 //
 
 protocol DataSourceProtocol {
+    
+    static func makeScreenItems(from responseData: [NewsDataResponse]) -> [ViewModelType]
+    
     var currentScreenItems: [ViewModelType] { get }
     
     func item(at index: Int) -> ViewModelType?
     func refreshScreenItems()
-    static func makeScreenItems(from responseData: [NewsDataResponse]) -> [ViewModelType]
+    
 }

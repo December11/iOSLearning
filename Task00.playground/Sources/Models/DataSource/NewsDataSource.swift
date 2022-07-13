@@ -31,18 +31,18 @@ final public class NewsDataSource: DataSourceProtocol {
         responseData.forEach { response in
             guard let item = ViewModelType(
                 type: response.type,
-                header: response.header ?? "",
-                title: response.title ?? "",
+                header: response.header,
+                title: response.title,
                 description: response.descriptions,
-                url: response.imageURL ?? "",
-                hexString: response.backgroundHexColor ?? ""
+                url: response.imageURL,
+                hexString: response.backgroundHexColor
             ) else {
                 return
             }
-
             models.append(item)
         }
-
+        
         return models
     }
+    
 }

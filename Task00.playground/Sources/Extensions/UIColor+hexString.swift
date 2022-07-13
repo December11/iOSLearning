@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIColor {
+    
     convenience init? (hexString: String, a: CGFloat = 1.0) {
         let hexValue = hexString.hasPrefix("#") ? String(hexString.dropFirst()) : hexString
         let scanner = Scanner(string: hexValue)
@@ -26,4 +27,5 @@ extension UIColor {
             alpha: a
         )
     }
+    
 }
